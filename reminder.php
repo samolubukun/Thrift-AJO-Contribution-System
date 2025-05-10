@@ -70,8 +70,8 @@
                                         $mail->isHTML(true);
 
                                         // Gmail app credentials
-                                        $mail->Username = 'hunterking4lf@gmail.com';
-                                        $mail->Password = 'wqgr duqy oglb kbsd'; // Use your generated Gmail App Password
+                                        $mail->Username = 'yourgmail';
+                                        $mail->Password = 'gmailapppasword'; // Use your generated Gmail App Password
 
                                         // Sender and recipient
                                         $mail->setFrom('admin@thriftmanagement.com', 'Thrift Management');
