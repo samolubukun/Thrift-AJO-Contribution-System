@@ -56,6 +56,9 @@ The Thrift Contribution System is a web-based application designed to streamline
     * Bank Name, Bank Account Number, Bank Code
     * Password (option to update)
 
+![png (1)](https://github.com/user-attachments/assets/0cbbc572-2a0f-4290-942b-1e16269637ea)
+
+
 ## Default Admin Login Details
 
 The default administrative credentials are:
@@ -63,6 +66,20 @@ The default administrative credentials are:
 * **Email:** admin.thriftcontribution@gmail.com
 * **Password:** admin123
 
+## Setup Instructions (PHP)
+
+To set up the Thrift Contribution System using PHP, follow these steps:
+
+1.  **Place Files in `htdocs`:** Copy all the project files and folders into the `htdocs` directory of your web server (e.g., Apache using XAMPP or WAMP).
+
+2.  **Create Database:** Create a new database named `thrift_management` in your MySQL server. Import the SQL file.
+
+3.  **Database Configuration:** The database connection details are typically located within your PHP files. Ensure that the following connection parameters are correctly set:
+    * **Hostname:** `localhost`
+    * **Username:** `root`
+    * **Password:** (leave blank if you haven't set a password for your MySQL root user)
+    * **Database Name:** `thrift_management`
+      
 ## Copyright
 
 © 2025 Thrift Contribution System. All rights reserved by [Samuel Olubukun](https://github.com/samolubukun).
