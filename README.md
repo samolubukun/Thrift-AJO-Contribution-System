@@ -6,7 +6,7 @@ The Thrift Contribution System is a web-based application designed to streamline
 
 ## Key Features
 
-## **Admin Dashboard:**
+## **Admin Dashboard**
 
 * Provides a central overview of the system.
 * Displays a welcome message with the admin's email.
@@ -32,9 +32,10 @@ The Thrift Contribution System is a web-based application designed to streamline
 **System Administration:**
 
 * **Add Admin:** Add new administrator accounts to manage the system.
+![png](https://github.com/user-attachments/assets/9bc9a24b-8df6-456f-a411-9f0138540720)
 
 
-## **Member Interface:**
+## **Member Interface**
 
 * **Join a Thrift Group:** Members can browse and request to join available thrift groups.
 * **Contribution Status:** Members can view their current contribution status (e.g., Pending if they haven't contributed for the month, Contributed) and can make their contribution if it hasn't been made yet for the current month.
