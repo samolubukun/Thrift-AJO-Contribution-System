@@ -54,7 +54,7 @@ The Thrift Contribution System is a web-based application designed to streamline
     * Bank Name, Bank Account Number, Bank Code
     * Password (option to update)
 
-## Important Security Note
+## Default Admin Login Details
 
 The default administrative credentials are:
 
