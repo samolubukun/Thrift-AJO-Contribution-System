@@ -1,0 +1,504 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1em 0;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 8px 8px 0 0;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+main {
+    padding: 20px 0;
+}
+
+h2 {
+    color: #333;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+strong {
+    font-weight: bold;
+    color: #555;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    background-color: #5cb85c;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="text"],
+select {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: bold;
+}
+
+.error {
+    color: #d9534f;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+/* Admin - Manage Groups (assign_members.php) Specific Styles */
+#existing-groups li {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#existing-groups li ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+#existing-groups li ul li {
+    padding: 5px 0;
+    border-bottom: none;
+}
+
+#existing-groups form {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+#existing-groups input[type="number"] {
+    width: 80px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+#assign-members form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#assign-members label {
+    font-weight: bold;
+    color: #555;
+}
+
+#assign-members select {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+#assign-members button[type="submit"] {
+    margin-top: 15px;
+    background-color: #007bff;
+}
+
+#assign-members button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Admin Login (admin_login.php) Specific Styles */
+.container.admin-login {
+    max-width: 400px;
+    margin-top: 50px;
+}
+
+.container.admin-login h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.container.admin-login form {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.container.admin-login form h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.container.admin-login .form-group button[type="submit"] {
+    width: 100%;
+    background-color: #5cb85c;
+}
+
+.container.admin-login .form-group button[type="submit"]:hover {
+    background-color: #4cae4c;
+}
+
+/* Detailed Admin Report (admin_report.php) Specific Styles */
+#report h2 {
+    margin-top: 0;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Admin Dashboard (admin.php) Specific Styles */
+.admin-dashboard header {
+    background-color: #dc3545; /* Bootstrap danger color */
+}
+
+.admin-dashboard .card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-dashboard .card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.admin-dashboard .card-title {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.admin-dashboard .card-text {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.admin-dashboard .btn-danger,
+.admin-dashboard .btn-info,
+.admin-dashboard .btn-warning {
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.admin-dashboard .btn-danger {
+    background-color: #dc3545;
+}
+
+.admin-dashboard .btn-danger:hover {
+    background-color: #c82333;
+}
+
+.admin-dashboard .btn-info {
+    background-color: #17a2b8;
+}
+
+.admin-dashboard .btn-info:hover {
+    background-color: #138496;
+}
+
+.admin-dashboard .btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.admin-dashboard .btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.admin-dashboard footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Fund Distribution (fund_distribution.php) Specific Styles */
+.fund-distribution header {
+    background-color: #ffc107; /* Bootstrap warning color */
+    color: #212529;
+}
+
+.fund-distribution .card-header {
+    color: #fff;
+    border-radius: 5px 5px 0 0;
+    padding: 15px;
+}
+
+.fund-distribution .card-header.bg-primary {
+    background-color: #007bff !important;
+}
+
+.fund-distribution .card-header.bg-success {
+    background-color: #28a745 !important;
+}
+
+.fund-distribution .card-body {
+    padding: 20px;
+}
+
+.fund-distribution .form-group label {
+    font-weight: bold;
+    color: #555;
+}
+
+.fund-distribution .form-control {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.fund-distribution .alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.fund-distribution .alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.fund-distribution .alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+.fund-distribution .alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.fund-distribution .btn-warning {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+}
+
+.fund-distribution .btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.fund-distribution .lead {
+    font-size: 1.1em;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.fund-distribution .lead strong {
+    color: #333;
+}
+
+.fund-distribution .text-danger {
+    color: #dc3545 !important;
+}
+
+/* Insert Admin (insert_admin.php) Specific Styles */
+.insert-admin header {
+    background-color: #007bff; /* Bootstrap primary color */
+}
+
+.insert-admin .container {
+    max-width: 600px;
+}
+
+.insert-admin h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.insert-admin form {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.insert-admin .form-group label {
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.insert-admin .form-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    margin-bottom: 15px;
+}
+
+.insert-admin .form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.insert-admin .btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    cursor: pointer;
+    width: 100%;
+}
+
+.insert-admin .btn-primary:hover {
+    color: #fff;
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.insert-admin footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 30px;
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 8px 8px;
+    color: #6c757d;
+    font-size: 0.9em;
+}
