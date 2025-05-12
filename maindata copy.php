@@ -1,384 +1,242 @@
 <?php
 // Database connection
-$host = 'localhost';
-$dbname = 'thrift_management';
-$username = 'root';
-$password = '';
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "thrift_management";
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connected to database successfully.<br>";
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Nigerian first names
-$firstNames = [
-    'Adebayo', 'Chidi', 'Oluwaseun', 'Ngozi', 'Emeka', 'Chioma', 'Obinna', 
-    'Folake', 'Tunde', 'Amaka', 'Yemi', 'Blessing', 'Olumide', 'Funmilayo', 
-    'Chinedu', 'Aisha', 'Ibrahim', 'Nneka', 'Segun', 'Fatima', 'Rotimi', 
-    'Zainab', 'Femi', 'Chinwe', 'Dayo', 'Halima', 'Kayode', 'Ngozi', 'Uche',
-    'Lola', 'Wale', 'Victoria', 'Samuel', 'Jumoke', 'Onyeka', 'Rasheedat'
+// Temporarily disable foreign key checks
+$conn->query("SET FOREIGN_KEY_CHECKS = 0");
+
+// Clear existing data (except admin table) in the correct order
+$tables = [
+    'contributions',
+    'fund_distribution',
+    'reassignment_requests',
+    'group_join_requests',
+    'group_members',
+    'members',
+    'groups'
 ];
 
-// Nigerian middle names
-$middleNames = [
-    'Abiodun', 'Temitope', 'Uchenna', 'Adeola', 'Ikechukwu', 'Oluwakemi', 
-    'Chukwuma', 'Folashade', 'Babatunde', 'Nkechi', 'Oluwadamilola', 'Chiamaka', 
-    'Adewale', 'Olabisi', 'Chibuike', 'Yetunde', 'Abimbola', 'Uzoma', 'Damilola', 
-    'Habiba', 'Johnson', 'Zubair', 'Funmilayo', 'Rotimi', 'Vivian', 'Quincy', 'Sunday'
-];
+foreach ($tables as $table) {
+    $conn->query("TRUNCATE TABLE $table");
+    if ($conn->error) {
+        echo "Error truncating $table: " . $conn->error . "<br>";
+    } else {
+        echo "Truncated $table successfully<br>";
+    }
+}
 
-// Nigerian last names
-$lastNames = [
-    'Adeyemi', 'Okonkwo', 'Adebisi', 'Nwosu', 'Okafor', 'Adegoke', 'Eze', 
-    'Ogunleye', 'Chukwu', 'Afolabi', 'Okeke', 'Adeleke', 'Amadi', 'Ayodele', 
-    'Njoku', 'Oladipo', 'Igwe', 'Balogun', 'Obiora', 'Lawal', 'Okoro', 'Abiodun', 
-    'Ojo', 'Nnamdi', 'Adesina', 'Umaru', 'Gbadamosi', 'Kolawole', 'Taiwo', 
-    'Williams', 'Zakariyya', 'Rabiu', 'Egwu', 'Danjuma', 'Fabiyi', 'Yakubu'
-];
+// Reset auto-increment counters
+foreach ($tables as $table) {
+    $conn->query("ALTER TABLE $table AUTO_INCREMENT = 1");
+}
 
-// Nigerian cities
-$cities = [
-    'Lagos', 'Abuja', 'Ibadan', 'Port Harcourt', 'Kano', 'Benin City', 'Kaduna', 
-    'Enugu', 'Warri', 'Calabar', 'Jos', 'Aba', 'Maiduguri', 'Zaria', 'Akure'
+// Nigerian data arrays
+$first_names = ['Tunde', 'Chioma', 'Adebayo', 'Oluwaseun', 'Ngozi', 'Emeka', 'Funmilayo', 'Chinedu', 'Blessing', 'Oluwafemi', 'Ifeanyi', 'Yewande', 'Obinna', 'Folake', 'Chukwudi', 'Aisha', 'Babatunde', 'Bukola', 'Ikechukwu', 'Olajumoke', 'Abayomi', 'Chinwe', 'Kayode', 'Chiamaka', 'Rotimi', 'Amara', 'Segun', 'Nneka', 'Musa', 'Temitope'];
+$middle_names = ['Adeola', 'Chibuike', 'Olufunke', 'Chukwuma', 'Folashade', 'Oluwaseyi', 'Obioma', 'Bolaji', 'Nkechi', 'Olamide', 'Chidimma', 'Adewale', 'Ifeoma', 'Damilola', 'Chidinma', 'Adeyemi', 'Olabisi', 'Chidi', 'Oluwatoyin', 'Chizoba'];
+$last_names = ['Okafor', 'Adeyemi', 'Okonkwo', 'Afolabi', 'Ezinwa', 'Olawale', 'Eze', 'Adekoya', 'Nwachukwu', 'Adeleke', 'Nwosu', 'Olarewaju', 'Igwe', 'Oyedepo', 'Njoku', 'Bankole', 'Okoro', 'Akinola', 'Chukwu', 'Ogunleye'];
+$addresses = [
+    'Lagos' => ['Lekki', 'Ikeja', 'Surulere', 'Victoria Island', 'Ikoyi', 'Yaba', 'Ajah', 'Maryland', 'Gbagada', 'Apapa'],
+    'Abuja' => ['Garki', 'Wuse', 'Maitama', 'Asokoro', 'Jabi', 'Gwarinpa', 'Utako', 'Mabushi', 'Karu', 'Kubwa'],
+    'Port Harcourt' => ['GRA', 'Rumuokoro', 'Rumuola', 'Elekahia', 'D-Line', 'Trans Amadi', 'Borokiri', 'Rumukwurushi', 'Diobu', 'Rumuokwuta'],
+    'Kano' => ['Nasarawa', 'Fagge', 'Kano Municipal', 'Dala', 'Tarauni', 'Gwale', 'Ungogo', 'Kumbotso', 'Minjibir', 'Garun Mallam'],
+    'Ibadan' => ['Bodija', 'Akobo', 'Challenge', 'Oluyole', 'Jericho', 'Mokola', 'Dugbe', 'Iyaganku', 'Ring Road', 'Agodi'],
+    'Enugu' => ['Independence Layout', 'GRA', 'New Haven', 'Trans Ekulu', 'Uwani', 'Ogui', 'Abakpa', 'Achara Layout', 'Emene', 'Maryland'],
+    'Benin City' => ['GRA', 'Ugbowo', 'Sapele Road', 'Airport Road', 'New Benin', 'Aduwawa', 'Ikpoba Hill', 'Uselu', 'Ogida', 'Ekenwan'],
+    'Calabar' => ['State Housing', 'Diamond Hill', 'IBB Way', 'Satellite Town', 'Calabar South', 'Big Qua', 'Ekorinim', 'Atimbo', 'Ikot Ishie', 'Marian'],
+    'Warri' => ['Effurun', 'Okumagba Layout', 'Airport Road', 'Udu', 'Jakpa', 'Osubi', 'Ugborikoko', 'Enerhen', 'Ekpan', 'PTI Road']
 ];
-
-// Nigerian areas
-$areas = [
-    'Ikeja', 'Lekki', 'Yaba', 'Surulere', 'Ikoyi', 'Ajah', 'Gbagada', 'Ogudu', 
-    'Maryland', 'Festac', 'Apapa', 'Isolo', 'Magodo', 'Ilupeju', 'Ogba'
-];
-
-// Nigerian streets
-$streets = [
-    'Adeola Odeku Street', 'Awolowo Road', 'Adeniran Ogunsanya', 'Opebi Road', 
-    'Bourdillon Road', 'Akin Adesola Street', 'Ahmadu Bello Way', 'Adetokunbo Ademola', 
-    'Allen Avenue', 'Ogunlana Drive', 'Mobolaji Bank Anthony Way', 'Herbert Macaulay Way', 
-    'Ligali Ayorinde Street', 'Broad Street', 'Kofo Abayomi Street'
-];
-
-// Nigerian banks and codes
+$streets = ['Adeola Odeku Street', 'Awolowo Road', 'Ahmadu Bello Way', 'Opebi Road', 'Adeniran Ogunsanya', 'Broad Street', 'Mobolaji Bank Anthony Way', 'Adetokunbo Ademola', 'Bourdillon Road', 'Akin Adesola Street'];
 $banks = [
-    ['Access Bank', '44150149'],
-    ['Diamond Bank Plc', '63150162'],
-    ['Ecobank Nigeria Plc', '50150311'],
-    ['Enterprise Bank', '84150015'],
-    ['Equitorial Trust Bank Limited', '40150101'],
-    ['Fidelity Bank Plc', '70150003'],
-    ['First Bank Of Nigeria Plc', '11152303'],
-    ['First City Monument Bank Plc', '214150018'],
-    ['Finbank Plc', '85151275'],
-    ['Guaranty Trust Bank Plc', '58152052'],
-    ['Keystone Bank', '82150017'],
-    ['Mainstreet Bank', '14150030'],
-    ['Nigeria International Bank (Citigroup)', '23150005'],
-    ['ECOBank', '56080016'],
-    ['Polaris Bank Plc', '76151006'],
-    ['Stanbic-Ibtc Bank Plc', '221159522'],
-    ['Standard Chartered Bank Nigeria Ltd', '68150057'],
-    ['Sterling Bank Plc', '232150029'],
-    ['United Bank For Africa Plc', '33154282'],
-    ['Union Bank Of Nigeria Plc', '32156825'],
-    ['Zenith Bank Plc', '57150013'],
+    '44150149' => 'Access Bank',
+    '63150162' => 'Diamond Bank Plc',
+    '50150311' => 'Ecobank Nigeria Plc',
+    '84150015' => 'Enterprise Bank',
+    '40150101' => 'Equitorial Trust Bank Limited',
+    '70150003' => 'Fidelity Bank Plc',
+    '11152303' => 'First Bank Of Nigeria Plc',
+    '214150018' => 'First City Monument Bank Plc',
+    '85151275' => 'Finbank Plc',
+    '58152052' => 'Guaranty Trust Bank Plc',
+    '82150017' => 'Keystone Bank',
+    '14150030' => 'Mainstreet Bank',
+    '23150005' => 'Nigeria International Bank (Citigroup)',
+    '56080016' => 'ECOBank',
+    '76151006' => 'Polaris Bank Plc',
+    '221159522' => 'Stanbic-Ibtc Bank Plc',
+    '68150057' => 'Standard Chartered Bank Nigeria Ltd',
+    '232150029' => 'Sterling Bank Plc',
+    '33154282' => 'United Bank For Africa Plc',
+    '32156825' => 'Union Bank Of Nigeria Plc',
+    '57150013' => 'Zenith Bank Plc'
 ];
 
-// Function to generate random Nigerian phone number
-function generatePhoneNumber() {
-    $prefixes = ['0803', '0703', '0903', '0806', '0706', '0906', '0805', '0705', '0905', '0807', '0707', '0907', '0809', '0709', '0909', '0814', '0704', '0901', '0802', '0902', '0808', '0708', '0908'];
-    $prefix = $prefixes[array_rand($prefixes)];
-    $suffix = str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
-    return $prefix . $suffix;
+// Create groups
+$groups = [
+    ['name' => 'Ajo Cooperative', 'amount' => 5000.00, 'max_members' => 12],
+    ['name' => 'Esusu Group', 'amount' => 10000.00, 'max_members' => 8],
+    ['name' => 'Adashi Union', 'amount' => 20000.00, 'max_members' => 7]
+];
+
+foreach ($groups as $group) {
+    $sql = "INSERT INTO groups (name, amount, current_number_of_members, max_members, date_created)
+            VALUES ('{$group['name']}', {$group['amount']}, 0, {$group['max_members']}, '2024-09-01')";
+    $conn->query($sql);
 }
 
-// Function to generate random Nigerian bank account number
-function generateAccountNumber() {
-    return str_pad(rand(1000000, 9999999999), 10, '0', STR_PAD_LEFT);
-}
+// Generate members (total of 27 - 12 for first group, 8 for second, and 7 for third)
+$total_members = array_sum(array_column($groups, 'max_members'));
+$members = [];
 
-// Function to generate a random Nigerian address
-function generateAddress($streets, $areas, $cities) {
-    $streetNumber = rand(1, 150);
+for ($i = 1; $i <= $total_members; $i++) {
+    $first_name = $first_names[array_rand($first_names)];
+    $middle_name = $middle_names[array_rand($middle_names)];
+    $last_name = $last_names[array_rand($last_names)];
+    $email = strtolower($first_name) . '.' . strtolower($last_name) . '@gmail.com';
+
+    // Generate phone number (Nigerian format)
+    $phone_number = '0' . rand(7, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9);
+
+    // Generate address
+    $city = array_rand($addresses);
+    $area = $addresses[$city][array_rand($addresses[$city])];
     $street = $streets[array_rand($streets)];
-    $area = $areas[array_rand($areas)];
-    $city = $cities[array_rand($cities)];
-    return $streetNumber . ' ' . $street . ', ' . $area . ', ' . $city;
-}
+    $street_number = rand(1, 150);
+    $address = $street_number . ' ' . $street . ', ' . $area . ', ' . $city;
 
-// Function to generate an email from name
-function generateEmail($firstName, $lastName) {
-    $domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
-    $domain = $domains[array_rand($domains)];
-    return strtolower($firstName . '.' . $lastName . '@' . $domain);
-}
-
-// Function to insert a member and return the ID
-function insertMember($pdo, $firstName, $middleName, $lastName, $email, $phone, $address, $contributionPlan, $rotationOrder, $bankName, $accountNumber, $bankCode) {
-    $hashedPassword = password_hash('password123', PASSWORD_DEFAULT);
-    
-    $sql = "INSERT INTO members (
-        first_name, middle_name, last_name, email, password, phone_number, address, 
-        contribution_plan, contribution_status, rotation_order, date_joined, 
-        bank_name, bank_account_number, bank_code
-    ) VALUES (
-        :firstName, :middleName, :lastName, :email, :password, :phone, :address,
-        :contributionPlan, 'Pending', :rotationOrder, :dateJoined,
-        :bankName, :accountNumber, :bankCode
-    )";
-    
-    $stmt = $pdo->prepare($sql);
-    $joinDate = date('Y-m-d H:i:s', strtotime('2024-11-01 ' . rand(10, 23) . ':' . rand(10, 59) . ':' . rand(10, 59)));
-    
-    $stmt->execute([
-        ':firstName' => $firstName,
-        ':middleName' => $middleName,
-        ':lastName' => $lastName,
-        ':email' => $email,
-        ':password' => $hashedPassword,
-        ':phone' => $phone,
-        ':address' => $address,
-        ':contributionPlan' => $contributionPlan,
-        ':rotationOrder' => $rotationOrder,
-        ':dateJoined' => $joinDate,
-        ':bankName' => $bankName,
-        ':accountNumber' => $accountNumber,
-        ':bankCode' => $bankCode
-    ]);
-    
-    return $pdo->lastInsertId();
-}
-
-// Function to add a member to a group
-function addMemberToGroup($pdo, $groupId, $memberId) {
-    $sql = "INSERT INTO group_members (group_id, member_id) VALUES (:groupId, :memberId)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':groupId' => $groupId,
-        ':memberId' => $memberId
-    ]);
-}
-
-// Function to record contributions
-function recordContribution($pdo, $memberId, $memberName, $amount, $date) {
-    $sql = "INSERT INTO contributions (member_id, member_name, amount, date_of_contribution) 
-            VALUES (:memberId, :memberName, :amount, :date)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':memberId' => $memberId,
-        ':memberName' => $memberName,
-        ':amount' => $amount,
-        ':date' => $date
-    ]);
-}
-
-// Function to distribute funds
-function distributeFunds($pdo, $groupId, $memberId, $amount, $date) {
-    $sql = "INSERT INTO fund_distribution (group_id, member_id, amount, distribution_date) 
-            VALUES (:groupId, :memberId, :amount, :date)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':groupId' => $groupId,
-        ':memberId' => $memberId,
-        ':amount' => $amount,
-        ':date' => $date
-    ]);
-}
-
-// Generate members for each group
-$groupMembers = [
-    1 => [], // Ajo Premier - 12 members
-    2 => [], // Esusu Cooperative - 8 members
-    3 => []  // Adashi Union - 7 members
-];
-
-// Group contribution amounts
-$groupAmounts = [
-    1 => 5000.00,  // Ajo Premier
-    2 => 10000.00, // Esusu Cooperative
-    3 => 20000.00  // Adashi Union
-];
-
-// Create members and assign to groups
-$memberCount = 1;
-$usedEmails = [];
-
-// Ajo Premier - 12 members
-for ($i = 1; $i <= 12; $i++) {
-    $firstName = $firstNames[array_rand($firstNames)];
-    $middleName = $middleNames[array_rand($middleNames)];
-    $lastName = $lastNames[array_rand($lastNames)];
-    $email = generateEmail($firstName, $lastName);
-    
-    // Ensure unique email
-    while (in_array($email, $usedEmails)) {
-        $firstName = $firstNames[array_rand($firstNames)];
-        $lastName = $lastNames[array_rand($lastNames)];
-        $email = generateEmail($firstName, $lastName);
+    // Set contribution plan based on group
+    if ($i <= $groups[0]['max_members']) {
+        $contribution_plan = $groups[0]['amount']; // Group 1
+    } elseif ($i <= $groups[0]['max_members'] + $groups[1]['max_members']) {
+        $contribution_plan = $groups[1]['amount']; // Group 2
+    } else {
+        $contribution_plan = $groups[2]['amount']; // Group 3
     }
-    
-    $usedEmails[] = $email;
-    
-    $phone = generatePhoneNumber();
-    $address = generateAddress($streets, $areas, $cities);
-    $bank = $banks[array_rand($banks)];
-    $accountNumber = generateAccountNumber();
-    
-    $memberId = insertMember(
-        $pdo, $firstName, $middleName, $lastName, $email, $phone, $address,
-        $groupAmounts[1], $i, $bank[0], $accountNumber, $bank[1]
-    );
-    
-    $groupMembers[1][$i] = [
-        'id' => $memberId,
-        'name' => $firstName . ' ' . $lastName,
-        'email' => $email,
-        'amount' => $groupAmounts[1]
-    ];
-    
-    addMemberToGroup($pdo, 1, $memberId);
-    $memberCount++;
-}
 
-// Esusu Cooperative - 8 members
-for ($i = 1; $i <= 8; $i++) {
-    $firstName = $firstNames[array_rand($firstNames)];
-    $middleName = $middleNames[array_rand($middleNames)];
-    $lastName = $lastNames[array_rand($lastNames)];
-    $email = generateEmail($firstName, $lastName);
-    
-    // Ensure unique email
-    while (in_array($email, $usedEmails)) {
-        $firstName = $firstNames[array_rand($firstNames)];
-        $lastName = $lastNames[array_rand($lastNames)];
-        $email = generateEmail($firstName, $lastName);
+    // Set rotation order (1-27)
+    $rotation_order = $i;
+
+    // Bank details
+    $bank_code = array_rand($banks);
+    $bank_name = $banks[$bank_code];
+    $bank_account_number = rand(1000000000, 9999999999);
+
+    // Hash password (password123)
+    $hashed_password = password_hash('password123', PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO members (first_name, middle_name, last_name, email, password, phone_number, address,
+                contribution_plan, contribution_status, rotation_order, date_joined, bank_name, bank_account_number, bank_code)
+                VALUES ('$first_name', '$middle_name', '$last_name', '$email', '$hashed_password', '$phone_number', '$address',
+                $contribution_plan, 'Pending', $rotation_order, '2024-09-01', '$bank_name', '$bank_account_number', '$bank_code')";
+
+    if ($conn->query($sql) === TRUE) {
+        $members[] = $conn->insert_id;
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
-    
-    $usedEmails[] = $email;
-    
-    $phone = generatePhoneNumber();
-    $address = generateAddress($streets, $areas, $cities);
-    $bank = $banks[array_rand($banks)];
-    $accountNumber = generateAccountNumber();
-    
-    $memberId = insertMember(
-        $pdo, $firstName, $middleName, $lastName, $email, $phone, $address,
-        $groupAmounts[2], $i, $bank[0], $accountNumber, $bank[1]
-    );
-    
-    $groupMembers[2][$i] = [
-        'id' => $memberId,
-        'name' => $firstName . ' ' . $lastName,
-        'email' => $email,
-        'amount' => $groupAmounts[2]
-    ];
-    
-    addMemberToGroup($pdo, 2, $memberId);
-    $memberCount++;
 }
 
-// Adashi Union - 7 members
-for ($i = 1; $i <= 7; $i++) {
-    $firstName = $firstNames[array_rand($firstNames)];
-    $middleName = $middleNames[array_rand($middleNames)];
-    $lastName = $lastNames[array_rand($lastNames)];
-    $email = generateEmail($firstName, $lastName);
-    
-    // Ensure unique email
-    while (in_array($email, $usedEmails)) {
-        $firstName = $firstNames[array_rand($firstNames)];
-        $lastName = $lastNames[array_rand($lastNames)];
-        $email = generateEmail($firstName, $lastName);
+// Assign members to groups
+$member_index = 0;
+for ($i = 0; $i < count($groups); $i++) {
+    for ($j = 0; $j < $groups[$i]['max_members']; $j++) {
+        $member_id = $members[$member_index++];
+        $sql = "INSERT INTO group_members (group_id, member_id, date_joined)
+                VALUES (" . ($i + 1) . ", $member_id, '2024-09-01')";
+        $conn->query($sql);
     }
-    
-    $usedEmails[] = $email;
-    
-    $phone = generatePhoneNumber();
-    $address = generateAddress($streets, $areas, $cities);
-    $bank = $banks[array_rand($banks)];
-    $accountNumber = generateAccountNumber();
-    
-    $memberId = insertMember(
-        $pdo, $firstName, $middleName, $lastName, $email, $phone, $address,
-        $groupAmounts[3], $i, $bank[0], $accountNumber, $bank[1]
-    );
-    
-    $groupMembers[3][$i] = [
-        'id' => $memberId,
-        'name' => $firstName . ' ' . $lastName,
-        'email' => $email,
-        'amount' => $groupAmounts[3]
-    ];
-    
-    addMemberToGroup($pdo, 3, $memberId);
-    $memberCount++;
+    // Update group member counts
+    $conn->query("UPDATE groups SET current_number_of_members = {$groups[$i]['max_members']} WHERE id = " . ($i + 1));
 }
 
-echo "Created " . ($memberCount-1) . " members across 3 groups.<br>";
+// Generate contributions from September 2024 to the current date
+$start_date = strtotime('2024-09-01');
+$current_timestamp = time();
+$current_date = date('Y-m-d', $current_timestamp);
+$processing_date = $start_date;
 
-// Record monthly contributions and distributions
-// Going from November 2024 to April 2025 (6 months)
-$months = [
-    '2024-11',
-    '2024-12',
-    '2025-01',
-    '2025-02',
-    '2025-03',
-    '2025-04'
-];
+while (date('Y-m-d', $processing_date) <= $current_date) {
+    $year_month = date('Y-m', $processing_date);
 
-// Record contributions for each month
-foreach ($months as $month) {
-    // Random day in the month for contributions
-    $year = substr($month, 0, 4);
-    $monthNum = substr($month, 5, 2);
-    $daysInMonth = date('t', strtotime("$year-$monthNum-01"));
-    
-    // For each group
-    foreach ($groupMembers as $groupId => $members) {
-        // Get total group contribution amount for this month
-        $totalGroupAmount = 0;
-        
-        // Record contributions for each member
-        foreach ($members as $rotationOrder => $member) {
-            // Random day for contribution between 1st and 15th
-            $day = rand(1, 15);
-            $contributionDate = "$year-$monthNum-$day " . rand(8, 20) . ":" . rand(10, 59) . ":" . rand(10, 59);
-            
-            recordContribution(
-                $pdo, 
-                $member['id'], 
-                $member['name'], 
-                $member['amount'],
-                $contributionDate
-            );
-            
-            $totalGroupAmount += $member['amount'];
-        }
-        
-        // Distribute funds to one member per month per group
-        // Determine which member gets the distribution based on rotation order
-        $monthIndex = array_search($month, $months);
-        
-        // Each group distributes to one member per month based on rotation
-        if (isset($members[$monthIndex + 1])) {
-            $recipientMember = $members[$monthIndex + 1];
-            $distributionDay = rand(16, $daysInMonth);
-            $distributionDate = "$year-$monthNum-$distributionDay";
-            
-            distributeFunds(
-                $pdo,
-                $groupId,
-                $recipientMember['id'],
-                $totalGroupAmount,
-                $distributionDate
-            );
-            
-            echo "Distributed $totalGroupAmount to " . $recipientMember['name'] . " in Group $groupId for $month<br>";
+    foreach ($members as $member_id) {
+        // Get member's contribution plan
+        $sql = "SELECT first_name, last_name, contribution_plan FROM members WHERE id = $member_id";
+        $result = $conn->query($sql);
+        $member = $result->fetch_assoc();
+
+        // Generate a random day of the month for the contribution
+        $days_in_month = cal_days_in_month(CAL_GREGORIAN, date('m', $processing_date), date('Y', $processing_date));
+        $contribution_day = rand(1, $days_in_month);
+        $contribution_date_time = $year_month . '-' . sprintf('%02d', $contribution_day) . ' ' . rand(8, 20) . ':' . rand(0, 59) . ':' . rand(0, 59);
+
+        // Ensure the contribution date is not in the future
+        if (strtotime($contribution_date_time) <= $current_timestamp) {
+            $sql = "INSERT INTO contributions (member_id, member_name, amount, date_of_contribution)
+                    VALUES ($member_id, '{$member['first_name']} {$member['last_name']}', {$member['contribution_plan']}, '$contribution_date_time')";
+            $conn->query($sql);
+
+            // Update contribution status to contributed
+            $conn->query("UPDATE members SET contribution_status = 'Contributed' WHERE id = $member_id");
         }
     }
+
+    // Move to the next month
+    $processing_date = strtotime('+1 month', $processing_date);
 }
 
-echo "Successfully created contributions and distributions for all months from November 2024 to April 2025.<br>";
-echo "All done! Your thrift management system has been populated with realistic data.";
+// Generate fund distributions (up to the current month for each group)
+$processing_distribution_date = strtotime('2024-09-27');
+$group_distribution_counts = array_fill(0, count($groups), 0);
+
+while (date('Y-m-d', $processing_distribution_date) <= $current_date) {
+    $distribution_year_month = date('Y-m', $processing_distribution_date);
+    $distribution_day = 27; // Consistent day for distribution
+    $distribution_date = $distribution_year_month . '-' . sprintf('%02d', $distribution_day) . ' 10:00:00';
+
+    for ($i = 0; $i < count($groups); $i++) {
+        $group_id = $i + 1;
+        $max_members = $groups[$i]['max_members'];
+        $contribution_amount = $groups[$i]['amount'];
+        $total_contribution = $max_members * $contribution_amount;
+
+        // Distribute to members based on rotation order, up to the number of distributions so far
+        $distributed_to_member_index = $group_distribution_counts[$i] % $max_members;
+        $sql_member = "SELECT member_id FROM group_members WHERE group_id = $group_id ORDER BY date_joined LIMIT $distributed_to_member_index, 1";
+        $result_member = $conn->query($sql_member);
+
+        if ($result_member && $result_member->num_rows > 0) {
+            $row_member = $result_member->fetch_assoc();
+            $recipient_member_id = $row_member['member_id'];
+
+            $sql_insert_distribution = "INSERT INTO fund_distribution (group_id, member_id, amount, distribution_date)
+                                        VALUES ($group_id, $recipient_member_id, $total_contribution, '$distribution_date')";
+            if ($conn->query($sql_insert_distribution)) {
+                $group_distribution_counts[$i]++;
+            } else {
+                echo "Error inserting distribution for group $group_id: " . $conn->error . "<br>";
+            }
+        }
+    }
+    $processing_distribution_date = strtotime('+1 month', $processing_distribution_date);
+}
+
+echo "Data generation complete. Successfully created:";
+echo "<ul>";
+echo "<li>" . count($groups) . " groups (" . implode(', ', array_column($groups, 'max_members')) . " members each)</li>";
+echo "<li>" . count($members) . " members with Nigerian details</li>";
+echo "<li>Contributions from Sep 2024 to " . date('F Y') . "</li>";
+echo "<li>Fund distributions per group up to " . date('F Y') . "</li>";
+echo "</ul>";
+
+$conn->close();
 ?>
